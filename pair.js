@@ -20,10 +20,10 @@ function removeFile(FilePath) {
 
 router.get("/", async (req, res) => {
   let num = req.query.number;
-  async function TharushaPair() {
+  async function RobinPair() {
     const { state, saveCreds } = await useMultiFileAuthState(`./session`);
     try {
-      let TharushaPairWeb = makeWASocket({
+      let RobinPairWeb = makeWASocket({
         auth: {
           creds: state.creds,
           keys: makeCacheableSignalKeyStore(
@@ -36,17 +36,17 @@ router.get("/", async (req, res) => {
         browser: Browsers.macOS("Safari"),
       });
 
-      if (!TharushaPairWeb.authState.creds.registered) {
+      if (!RobinPairWeb.authState.creds.registered) {
         await delay(1500);
         num = num.replace(/[^0-9]/g, "");
-        const code = await TharushaPairWeb.requestPairingCode(num);
+        const code = await RobinPairWeb.requestPairingCode(num);
         if (!res.headersSent) {
           await res.send({ code });
         }
       }
 
-      TharushaPairWeb.ev.on("creds.update", saveCreds);
-      TharushaPairWeb.ev.on("connection.update", async (s) => {
+      RobinPairWeb.ev.on("creds.update", saveCreds);
+      RobinPairWeb.ev.on("connection.update", async (s) => {
         const { connection, lastDisconnect } = s;
         if (connection === "open") {
           try {
@@ -54,7 +54,7 @@ router.get("/", async (req, res) => {
             const sessionPrabath = fs.readFileSync("./session/creds.json");
 
             const auth_path = "./session/";
-            const user_jid = jidNormalizedUser(TharushaPairWeb.user.id);
+            const user_jid = jidNormalizedUser(RobinPairWeb.user.id);
 
             function randomMegaId(length = 6, numberLength = 4) {
               const characters =
@@ -83,16 +83,16 @@ router.get("/", async (req, res) => {
 
             const sid = `*👋Hey*\n\n👉 ${string_session} 👈\n\n*This is the your Session ID. 😉*\n\n*You can ask any question using this link🖇️*\n*❖ Contact us-https://wa.me/+94740326138?text=_Hey_THARUSHA-MD_owner👋*\n*❖ You can join my whatsapp group - (im add later)*`;
             const mg = ` *Do not share this code to anyone* ‼️`;
-            const dt = await TharushaPairWeb.sendMessage(user_jid, {
+            const dt = await RobinPairWeb.sendMessage(user_jid, {
               image: {
                 url: "https://raw.githubusercontent.com/tharuzzzz/Jpg/refs/heads/main/20241129_134919.jpg",
               },
               caption: sid,
             });
-            const msg = await TharushaPairWeb.sendMessage(user_jid, {
+            const msg = await RobinPairWeb.sendMessage(user_jid, {
               text: string_session,
             });
-            const msg1 = await TharushaPairWeb.sendMessage(user_jid, { text: mg });
+            const msg1 = await RobinPairWeb.sendMessage(user_jid, { text: mg });
           } catch (e) {
             exec("pm2 restart prabath");
           }
@@ -111,7 +111,7 @@ router.get("/", async (req, res) => {
         }
       });
     } catch (err) {
-      exec("pm2 restart tharusha-md");
+      exec("pm2 restart robin-md");
       console.log("service restarted");
       RobinPair();
       await removeFile("./session");
